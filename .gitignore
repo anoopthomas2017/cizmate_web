@@ -1,0 +1,33 @@
+# Python files
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+venv/
+env/
+ENV/
+.venv/
+
+# Django specific
+*.sqlite3
+*.log
+*.pot
+*.pyc
+*.pyd
+*.db
+*.db-journal
+
+# Static files
+/static/
+media/
+*.css
+*.js
+*.png
+*.jpg
+*.jpeg
+
+# IDE and Editor specific
+.vscode/
+.idea/
+*.swp
