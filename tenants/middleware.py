@@ -1,21 +1,29 @@
-from cizmate_web.db_router import get_current_tenant
-from tenants.models import Tenant
-from django.http import HttpResponseNotFound
-import logging
+from django.apps import apps
 
-logger = logging.getLogger(__name__)
+from cizmate_web.db_router import DynamicTenantDatabaseRouter
+
 
 class TenantMiddleware:
-   def __init__(self, get_response):
+    def __init__(self, get_response):
         self.get_response = get_response
 
-   def __call__(self, request):
-        # Set the tenant for the request
-        request.tenant = get_current_tenant(request)
-        
-        if request.tenant:
-            print(f'Tenant set for request: {request.tenant}')
-        else:
-             print('No tenant found for request.')
+    def __call__(self, request):
+        host_parts = request.get_host().split('.')
+        subdomain = host_parts[0] if len(host_parts) > 1 else None
 
-        return self.get_response(request)
+        Tenant = apps.get_model('tenants', 'Tenant')
+        
+        tenant = None
+        if subdomain:
+            tenant = Tenant.objects.filter(name=subdomain).first()
+
+        if tenant:
+            request.tenant = tenant
+            DynamicTenantDatabaseRouter.setup_tenant_db(tenant)
+            DynamicTenantDatabaseRouter.set_tenant_db_name(tenant.name)
+        else:
+            request.tenant = None
+            DynamicTenantDatabaseRouter.set_tenant_db_name('default')
+        
+        response = self.get_response(request)
+        return response

@@ -3,8 +3,12 @@ from django.shortcuts import render
 from tenants.models import CompanyInfo
 def tenant_home(request):
     
-    
+    print (request.tenant)
+    tenant_data = CompanyInfo.objects.all()
+    print(tenant_data)
     if request.tenant:
+        
+
         tenant = request.tenant
         tenant_data = CompanyInfo.objects.all()
         # Pass the tenant to the template
