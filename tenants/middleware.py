@@ -9,14 +9,19 @@ class TenantMiddleware:
 
     def __call__(self, request):
         host_parts = request.get_host().split('.')
+        # print('--------host_parts--------')
+        # print(host_parts)
+        # print('----------------')
         subdomain = host_parts[0] if len(host_parts) > 1 else None
-
+        # print('--------subdomain--------')
+        # print(subdomain)
+        # print('----------------')
         Tenant = apps.get_model('tenants', 'Tenant')
-        
+     
         tenant = None
         if subdomain:
-            tenant = Tenant.objects.filter(name=subdomain).first()
-
+            tenant = Tenant.objects.using('default').filter(name=subdomain).first()
+           
         if tenant:
             request.tenant = tenant
             DynamicTenantDatabaseRouter.setup_tenant_db(tenant)

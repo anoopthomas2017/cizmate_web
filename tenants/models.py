@@ -19,8 +19,8 @@ class Tenant(models.Model):
     
 def validate_gst_number(value):
     # Regex for validating GST number
-    gst_pattern = r'^[0-9]{2}[A-Z]{4}[0-9]{4}[A-Z]{1}[0-9]{1}[Z]{1}[0-9A-Z]{1}$'
-    
+    # gst_pattern = r'^[0-9]{2}[A-Z]{4}[0-9]{4}[A-Z]{1}[0-9]{1}[Z]{1}[0-9A-Z]{1}$'
+    gst_pattern = r'^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$'
     if not re.match(gst_pattern, value):
         raise ValidationError(f"{value} is not a valid GST number.")
 

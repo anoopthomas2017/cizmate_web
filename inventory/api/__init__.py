@@ -1,0 +1,1 @@
+from .views.category_serializers import CategorySerializer, CategoryDetailSerializer
